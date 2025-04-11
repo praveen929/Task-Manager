@@ -8,8 +8,24 @@ const UserContext = React.createContext();
 // set axios to include credentials with every request
 axios.defaults.withCredentials = true;
 
+// Configure axios defaults
+axios.defaults.headers.common["Content-Type"] = "application/json";
+axios.defaults.headers.common["Accept"] = "application/json";
+
+// Add request interceptor to handle CORS
+axios.interceptors.request.use(
+  function (config) {
+    // Do something before request is sent
+    return config;
+  },
+  function (error) {
+    // Do something with request error
+    return Promise.reject(error);
+  }
+);
+
 export const UserContextProvider = ({ children }) => {
-  const serverUrl = "https://taskfyer.onrender.com";
+  const serverUrl = "http://localhost:8000";
 
   const router = useRouter();
 
@@ -88,7 +104,7 @@ export const UserContextProvider = ({ children }) => {
     }
   };
 
-  // get user Looged in Status
+  // get user Logged in Status
   const userLoginStatus = async () => {
     let loggedIn = false;
     try {
@@ -101,10 +117,16 @@ export const UserContextProvider = ({ children }) => {
       setLoading(false);
 
       if (!loggedIn) {
-        router.push("/login");
+        // Only redirect to login if we're not already on the login or register page
+        const currentPath = window.location.pathname;
+        if (currentPath !== "/login" && currentPath !== "/register") {
+          router.push("/login");
+        }
       }
     } catch (error) {
       console.log("Error getting user login status", error);
+      // Don't redirect on network errors or server errors
+      // This prevents redirect loops
     }
 
     return loggedIn;

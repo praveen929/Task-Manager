@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 
 const TasksContext = createContext();
 
-const serverUrl = "https://taskfyer.onrender.com/api/v1";
+const serverUrl = "http://localhost:8000/api/v1";
 
 export const TasksProvider = ({ children }) => {
   const userId = useUserContext().user._id;
@@ -48,11 +48,17 @@ export const TasksProvider = ({ children }) => {
   const getTasks = async () => {
     setLoading(true);
     try {
-      const response = await axios.get(`${serverUrl}/tasks`);
+      const response = await axios.get(`${serverUrl}/tasks`, {
+        withCredentials: true, // send cookies to the server
+      });
 
       setTasks(response.data.tasks);
     } catch (error) {
       console.log("Error getting tasks", error);
+      // Don't show error toast for auth errors when not logged in
+      if (error.response && error.response.status !== 401) {
+        toast.error(error.response.data.message || "Error fetching tasks");
+      }
     }
     setLoading(false);
   };
@@ -132,7 +138,10 @@ export const TasksProvider = ({ children }) => {
   const activeTasks = tasks.filter((task) => !task.completed);
 
   useEffect(() => {
-    getTasks();
+    // Only fetch tasks if userId exists (user is logged in)
+    if (userId) {
+      getTasks();
+    }
   }, [userId]);
 
   console.log("Active tasks", activeTasks);
