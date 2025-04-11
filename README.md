@@ -29,7 +29,7 @@ A full-stack task management application built with Next.js and Express.js.
    MONGO_URI=mongodb://localhost:27017/testing
    JWT_SECRET=your_secret_key
    CLIENT_URL=http://localhost:3000
-   PORT=8000
+   PORT=3000
    ```
 
 4. Start the backend server:
@@ -54,7 +54,7 @@ A full-stack task management application built with Next.js and Express.js.
 3. Create a `.env.local` file with the following variables:
 
    ```
-   NEXT_PUBLIC_API_URL=http://localhost:8000
+   NEXT_PUBLIC_API_URL=http://localhost:3000
    ```
 
 4. Start the frontend development server:

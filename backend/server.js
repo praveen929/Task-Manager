@@ -22,6 +22,8 @@ const allowedOrigins = [
   "http://localhost:3003",
   "http://localhost:3004",
   "http://localhost:3005",
+  // Add your client URL here
+  process.env.CLIENT_URL || "http://localhost:3000",
   // Add more as needed
 ];
 
@@ -30,10 +32,15 @@ app.use(
     origin: function (origin, callback) {
       // Allow requests with no origin (like mobile apps, curl requests)
       if (!origin) return callback(null, true);
+
+      // Check if the origin is in our allowedOrigins list
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        callback(null, true); // Allow all origins for now
+        // For development, we'll allow all origins
+        // In production, you might want to be more restrictive
+        console.log("Origin not in allowed list:", origin);
+        callback(null, true);
       }
     },
     credentials: true,
@@ -46,6 +53,11 @@ app.use(function (req, res, next) {
   // Website you wish to allow to connect
   const origin = req.headers.origin;
   if (allowedOrigins.indexOf(origin) !== -1) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else if (origin) {
+    // For development, allow all origins
+    // In production, you might want to be more restrictive
+    console.log("Setting header for non-allowed origin:", origin);
     res.setHeader("Access-Control-Allow-Origin", origin);
   }
 
