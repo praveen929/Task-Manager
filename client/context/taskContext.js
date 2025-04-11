@@ -5,7 +5,9 @@ import toast from "react-hot-toast";
 
 const TasksContext = createContext();
 
-const serverUrl = "http://localhost:8000/api/v1";
+// Use environment variable with fallback
+const serverUrl =
+  (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000") + "/api/v1";
 
 export const TasksProvider = ({ children }) => {
   const userId = useUserContext().user._id;

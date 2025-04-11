@@ -14,7 +14,16 @@ const app = express();
 
 // middleware
 // Allow specific origins for credentials
-const allowedOrigins = ["http://localhost:3000", "http://localhost:3001"];
+// In development, we'll allow any localhost port
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "http://localhost:3002",
+  "http://localhost:3003",
+  "http://localhost:3004",
+  "http://localhost:3005",
+  // Add more as needed
+];
 
 app.use(
   cors({
